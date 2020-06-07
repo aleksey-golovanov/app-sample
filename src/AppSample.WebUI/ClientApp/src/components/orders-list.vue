@@ -86,25 +86,7 @@ export default {
     "b-button": BButton,
     "b-spinner": BSpinner
   },
-  methods: {
-    getFormattedDate(dateString) {
-      const d = new Date(dateString);
-      return `${`0${d.getDate()}`.slice(-2)}.${`0${d.getMonth() + 1}`.slice(
-        -2
-      )}.${d.getFullYear()}`;
-    }
-  },
-  mounted() {
-    this.$store.dispatch(actions.GET_ORDERS);
-  },
-  computed: {
-    orders() {
-      return this.$store.getters.orders;
-    },
-    totalRows() {
-      return this.$store.getters.orders ? this.$store.getters.orders.length : 0;
-    }
-  },
+
   data() {
     return {
       fields: [
@@ -133,6 +115,28 @@ export default {
       perPage: 5,
       filter: null
     };
+  },
+
+  computed: {
+    orders() {
+      return this.$store.getters.orders;
+    },
+    totalRows() {
+      return this.$store.getters.orders ? this.$store.getters.orders.length : 0;
+    }
+  },
+
+  mounted() {
+    this.$store.dispatch(actions.GET_ORDERS);
+  },
+
+  methods: {
+    getFormattedDate(dateString) {
+      const d = new Date(dateString);
+      return `${`0${d.getDate()}`.slice(-2)}.${`0${d.getMonth() + 1}`.slice(
+        -2
+      )}.${d.getFullYear()}`;
+    }
   }
 };
 </script>

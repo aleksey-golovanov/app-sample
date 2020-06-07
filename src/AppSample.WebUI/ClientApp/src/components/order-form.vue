@@ -67,6 +67,7 @@ export default {
     "b-form-radio-group": BFormRadioGroup,
     "b-form-invalid-feedback": BFormInvalidFeedback
   },
+
   data() {
     return {
       form: {
@@ -79,6 +80,45 @@ export default {
       show: true
     };
   },
+
+  computed: {
+    validAddress() {
+      return this.form.clientAddress
+        ? this.form.clientAddress.length < 256
+        : true;
+    },
+    validDate() {
+      return this.form.orderDate !== null;
+    },
+    validForm() {
+      return this.validAddress && this.validDate;
+    },
+    companyOptions() {
+      return this.$store.getters.companies
+        ? [
+            { text: "Select Company", value: null },
+            ...this.$store.getters.companies.map(i => ({
+              text: i.title,
+              value: i.id
+            }))
+          ]
+        : null;
+    },
+    paymentTypeOptions() {
+      return this.$store.getters.paymentTypes
+        ? this.$store.getters.paymentTypes.map(i => ({
+            text: i.title,
+            value: i.id
+          }))
+        : null;
+    }
+  },
+
+  mounted() {
+    this.$store.dispatch(actions.GET_COMPANIES);
+    this.$store.dispatch(actions.GET_PAYMENT_TYPES);
+  },
+
   methods: {
     onSubmit(evt) {
       evt.preventDefault();
@@ -119,42 +159,6 @@ export default {
         this.show = true;
       });
     }
-  },
-  computed: {
-    validAddress() {
-      return this.form.clientAddress
-        ? this.form.clientAddress.length < 256
-        : true;
-    },
-    validDate() {
-      return this.form.orderDate !== null;
-    },
-    validForm() {
-      return this.validAddress && this.validDate;
-    },
-    companyOptions() {
-      return this.$store.getters.companies
-        ? [
-            { text: "Select Company", value: null },
-            ...this.$store.getters.companies.map(i => ({
-              text: i.title,
-              value: i.id
-            }))
-          ]
-        : null;
-    },
-    paymentTypeOptions() {
-      return this.$store.getters.paymentTypes
-        ? this.$store.getters.paymentTypes.map(i => ({
-            text: i.title,
-            value: i.id
-          }))
-        : null;
-    }
-  },
-  mounted() {
-    this.$store.dispatch(actions.GET_COMPANIES);
-    this.$store.dispatch(actions.GET_PAYMENT_TYPES);
   }
 };
 </script>
