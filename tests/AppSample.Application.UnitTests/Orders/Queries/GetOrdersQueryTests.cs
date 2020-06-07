@@ -2,6 +2,7 @@
 using AppSample.Infrastructure;
 using AutoMapper;
 using Shouldly;
+using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
 using Xunit;
@@ -29,8 +30,8 @@ namespace AppSample.Application.UnitTests.Orders.Queries
 
             var result = await handler.Handle(query, CancellationToken.None);
 
-            result.ShouldBeAssignableTo<OrdersVm>();
-            result.Entities.Count.ShouldBe(2);
+            result.ShouldBeAssignableTo<List<OrderDto>>();
+            result.Count.ShouldBe(2);
         }
     }
 }
