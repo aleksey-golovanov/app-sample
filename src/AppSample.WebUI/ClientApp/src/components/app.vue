@@ -9,7 +9,23 @@
         </b-navbar-nav>
       </b-navbar>
     </div>
+
     <router-view></router-view>
+
+    <div class="fixed-bottom">
+      <b-alert
+        :show="errorAlert!==null"
+        dismissible
+        @dismissed="dissmissErrorAlert"
+        variant="danger"
+      >{{errorAlert}}</b-alert>
+      <b-alert
+        :show="successAlertCountdown"
+        @dismissed="dissmissSuccessAlert"
+        @dismiss-count-down="countDownChanged"
+        variant="success"
+      >{{successAlert}}</b-alert>
+    </div>
   </div>
 </template>
 <script>
@@ -20,9 +36,36 @@ import {
   BContainer,
   BRow,
   BCol,
-  BNavItem
+  BNavItem,
+  BAlert
 } from "bootstrap-vue";
+import actions from "../store/actions";
 export default {
+  computed: {
+    errorAlert() {
+      return this.$store.getters.errorAlert;
+    },
+    successAlert() {
+      return this.$store.getters.successAlert;
+    },
+    successAlertCountdown() {
+      return this.$store.getters.successAlertCountdown;
+    }
+  },
+  methods: {
+    dissmissErrorAlert() {
+      this.$store.dispatch(actions.SET_ERROR_ALERT, null);
+    },
+    dissmissSuccessAlert() {
+      this.$store.dispatch(actions.SET_SUCCESS_ALERT, null);
+    },
+    countDownChanged(dismissCountDown) {
+      this.$store.dispatch(
+        actions.SET_SUCCESS_ALERT_COUNTDOWN,
+        dismissCountDown
+      );
+    }
+  },
   components: {
     "b-navbar": BNavbar,
     "b-navbar-nav": BNavbarNav,
@@ -30,7 +73,8 @@ export default {
     "b-container": BContainer,
     "b-row": BRow,
     "b-col": BCol,
-    "b-nav-item": BNavItem
+    "b-nav-item": BNavItem,
+    "b-alert": BAlert
   }
 };
 </script>

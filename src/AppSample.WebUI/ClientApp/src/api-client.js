@@ -1,4 +1,6 @@
 import axios from "axios";
+import { store } from "./store/store";
+import actions from "./store/actions";
 
 const axiosInstance = axios.create({
     baseURL: "/api",
@@ -9,8 +11,7 @@ axiosInstance.interceptors.response.use(function (response) {
     return response;
 }, function (error) {
     if (!axios.isCancel(error)) {
-        //alert.show(`${error.response.data.error} ${error.response.data.id}`, { timeout: 0, type: "error" });
-        //TODO: alert
+        store.dispatch(actions.SET_ERROR_ALERT, `${error.response.data.error} ${error.response.data.id}`);
     }
 
     return Promise.reject(error);

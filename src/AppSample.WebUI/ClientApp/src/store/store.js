@@ -10,13 +10,19 @@ export const store = new Vuex.Store({
     state: {
         orders: null,
         companies: null,
-        paymentTypes: null
+        paymentTypes: null,
+        errorAlert: null,
+        successAlert: null,
+        successAlertCountdown: 0
     },
 
     getters: {
         orders: state => state.orders,
         companies: state => state.companies,
-        paymentTypes: state => state.paymentTypes
+        paymentTypes: state => state.paymentTypes,
+        errorAlert: state => state.errorAlert,
+        successAlert: state => state.successAlert,
+        successAlertCountdown: state => state.successAlertCountdown
     },
 
     mutations: {
@@ -34,6 +40,18 @@ export const store = new Vuex.Store({
 
         [mutations.ADD_ORDER]: (state, payload) => {
             state.orders.push(payload);
+        },
+
+        [mutations.SET_ERROR_ALERT]: (state, payload) => {
+            state.errorAlert = payload;
+        },
+
+        [mutations.SET_SUCCESS_ALERT]: (state, payload) => {
+            state.successAlert = payload;
+        },
+
+        [mutations.SET_SUCCESS_ALERT_COUNTDOWN]: (state, payload) => {
+            state.successAlertCountdown = payload;
         }
     },
 
@@ -51,7 +69,23 @@ export const store = new Vuex.Store({
         },
 
         [actions.SAVE_ORDER]: async (context, order) => {
-            ApiClient.postOrder(order).then(response => context.commit(mutations.ADD_ORDER, { ...order, id: response.data }));
+            ApiClient.postOrder(order).then(response => {
+                context.commit(mutations.ADD_ORDER, { ...order, id: response.data });
+                context.commit(mutations.SET_SUCCESS_ALERT, "Order created");
+                context.commit(mutations.SET_SUCCESS_ALERT_COUNTDOWN, 2);
+            });
+        },
+
+        [actions.SET_ERROR_ALERT]: async (context, error) => {
+            context.commit(mutations.SET_ERROR_ALERT, error);
+        },
+
+        [actions.SET_SUCCESS_ALERT]: async (context, error) => {
+            context.commit(mutations.SET_SUCCESS_ALERT, error);
+        },
+
+        [actions.SET_SUCCESS_ALERT_COUNTDOWN]: async (context, countdown) => {
+            context.commit(mutations.SET_SUCCESS_ALERT_COUNTDOWN, countdown);
         }
     }
 });
